@@ -9,3 +9,11 @@ dotnet ef database update
 dotnet ef database drop
 
 dotnet watch --no-hot-reload
+
+-- create vite app with typescript template
+npm create vite@latest client --template react-ts
+
+--JSON to ts
+json2ts.com
+
+-- MUI is not compatible with SSR, for those projects use Emotion (after 2021)
