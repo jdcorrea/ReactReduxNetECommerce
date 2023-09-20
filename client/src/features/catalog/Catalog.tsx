@@ -1,7 +1,7 @@
 import { Product } from "app/models/product";
 import ProductList from "./ProductList";
 import { useState, useEffect } from "react";
-import axios from 'axios'
+import agent from "@app/api/agent";
 
 function Catalog() {
 
@@ -9,8 +9,8 @@ function Catalog() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios('http://localhost:5000/api/products')
-      .then(response => setProducts(response.data))
+    agent.Catalog.list()
+      .then(response => setProducts(response))
       .catch(error => console.log(error))
       .finally(() => setLoading(false))
   }, [])
