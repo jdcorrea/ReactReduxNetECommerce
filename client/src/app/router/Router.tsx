@@ -1,3 +1,4 @@
+import ServerError from "@app/errors/ServerError"
 import App from "@app/layout/App"
 import AboutPage from "@features/about/AboutPage"
 import Catalog from "@features/catalog/Catalog"
@@ -16,6 +17,7 @@ export const router = createBrowserRouter([
       {path: 'catalog/:id', element: <ProductDetails />},
       {path: 'about', element: <AboutPage />},
       {path: 'contact', element: <ContactPage />},
+      {path: 'server-error', element: <ServerError />},
     ]
   }
 ])

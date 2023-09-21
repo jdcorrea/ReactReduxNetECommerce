@@ -1,3 +1,4 @@
+import { router } from "@app/router/Router";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from 'react-toastify'
 
@@ -26,7 +27,7 @@ axios.interceptors.response.use(response => {
       toast.error(data.title)
       break
     case 500:
-      toast.error(data.title)
+      router.navigate('/server-error', {state: {error: data}})
       break
     default:
       break
