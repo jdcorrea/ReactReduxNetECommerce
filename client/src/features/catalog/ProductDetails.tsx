@@ -11,6 +11,7 @@ import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import agent from '@app/api/agent'
 import NotFound from '@app/errors/NotFound'
+import Loading from '@app/layout/Loading'
 
 function ProductDetails() {
   const { id } = useParams<{id: string}>()
@@ -24,7 +25,7 @@ function ProductDetails() {
       .finally(() => setLoading(false))
   }, [id])
   
-  if (loading) return <h3>Loading...</h3>
+  if (loading) return <Loading message='Loading product detail...'/>
 
   if (!product) return <NotFound />
 

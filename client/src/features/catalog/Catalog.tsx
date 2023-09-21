@@ -2,6 +2,7 @@ import { Product } from "app/models/product";
 import ProductList from "./ProductList";
 import { useState, useEffect } from "react";
 import agent from "@app/api/agent";
+import Loading from "@app/layout/Loading";
 
 function Catalog() {
 
@@ -15,7 +16,7 @@ function Catalog() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <h3>Loading...</h3>
+  if (loading) return <Loading message="Loading products..."/>
 
   return (
     <>
