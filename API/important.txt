@@ -17,3 +17,6 @@ npm create vite@latest client --template react-ts
 json2ts.com
 
 -- MUI is not compatible with SSR, for those projects use Emotion (after 2021)
+
+-- Adding Entity Framework Migrations
+dotnet ef migrations add BasketEntityAdded
