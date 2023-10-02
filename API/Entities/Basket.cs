@@ -13,8 +13,9 @@ namespace API.Entities
 
         public void AddItem(Product product, int quantity)
         {
-            if (Items.All(item => item.Id != product.Id))
+            if (Items.All(item => item.ProductId != product.Id))
             {
+                Console.WriteLine(Items.ToString(), product.Id);
                 Items.Add(new BasketItem{Product = product, Quantity = quantity});
             }
 
@@ -27,7 +28,7 @@ namespace API.Entities
             var item = Items.FirstOrDefault(item => item.ProductId == productId);
             if (item == null) return;
             item.Quantity -= quantity;
-            if (item.Quantity == 0) Items.Remove(item);
+            if (item.Quantity <= 0) Items.Remove(item);
         }
     }
 }

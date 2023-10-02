@@ -55,7 +55,7 @@ namespace API.Controllers
             basket.AddItem(product, quantity);
             
             var result = await _context.SaveChangesAsync() > 0;
-            if (result) return StatusCode(201);
+            if (result) return Ok();
 
             return BadRequest(new ProblemDetails{Title = "problem saving item to basket"});
         }
@@ -63,10 +63,12 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<ActionResult> RemoveBasketItem(int productId, int quantity)
         {
-            // get backed
-            // remove item or reduce quantity
-            // save changes
-            return Ok();
+            var basket = await RetrieveBasket();
+            if (basket == null) return NotFound();
+            basket.RemoveItem(productId, quantity);
+            var result = await _context.SaveChangesAsync() > 0;
+            if (result) return StatusCode(201);
+            return BadRequest(new ProblemDetails{Title = "problem removing item from basket"});
         }
 
         private async Task<Basket> RetrieveBasket()
