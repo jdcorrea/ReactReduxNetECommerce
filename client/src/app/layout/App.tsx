@@ -1,12 +1,29 @@
 import './styles.css'
 import Header from './Header'
 import { Container, CssBaseline, ThemeProvider, createTheme } from '@mui/material'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Outlet } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useStoreContext } from '@app/context/StoreContext'
+import { getCookie } from '@app/util/util'
+import agent from '@app/api/agent'
+import Loading from './Loading'
 
 function App() {
+  const {setBasket} = useStoreContext();
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const buyerId = getCookie('buyerId');
+    if (buyerId) {
+      agent.Basket.get()
+        .then(basket => setBasket(basket))
+        .catch(error => console.log(error))
+        .finally(() => setLoading(false))
+    }
+  }, [setBasket])
+
   const [darkMode, setDarkMode] = useState(false)
   const paletteType = darkMode ? 'dark' : 'light'
   const theme = createTheme({
@@ -21,6 +38,8 @@ function App() {
   function handleThemeChange() {
     setDarkMode(prevState => !prevState)
   }
+
+  if (loading) return <Loading />
 
   return (
     <>
