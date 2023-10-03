@@ -15,7 +15,6 @@ namespace API.Entities
         {
             if (Items.All(item => item.ProductId != product.Id))
             {
-                Console.WriteLine(Items.ToString(), product.Id);
                 Items.Add(new BasketItem{Product = product, Quantity = quantity});
             }
 
