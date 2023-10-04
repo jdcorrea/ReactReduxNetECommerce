@@ -1,5 +1,5 @@
 import Typography from '@mui/material/Typography'
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Box, Grid } from "@mui/material"
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Box, Grid, Button } from "@mui/material"
 import { Add, Delete, Remove } from "@mui/icons-material"
 import { useStoreContext } from "@app/context/StoreContext"
 import agent from '@app/api/agent';
@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { LoadingButton } from '@mui/lab';
 import BasketSummary from './BasketSummary';
 import { currencyFormat } from '@app/util/util';
+import { Link } from 'react-router-dom';
 
 
 function BasketPage() {
@@ -95,6 +96,15 @@ function BasketPage() {
         <Grid item xs={6} />
         <Grid item xs={6}>
           <BasketSummary />
+          <Button
+            component={Link}
+            to='/checkout'
+            variant='contained'
+            size='large'
+            fullWidth
+          >
+            Checkout
+          </Button>
         </Grid>
       </Grid>
     </>
