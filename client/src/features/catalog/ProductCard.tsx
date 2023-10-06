@@ -5,8 +5,9 @@ import { Card, CardMedia, CardContent, Typography, CardActions, Button, CardHead
 import { LoadingButton } from '@mui/lab'
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useStoreContext } from "@app/context/StoreContext";
 import { currencyFormat } from "@app/util/util";
+import { useAppDispatch } from "@app/store/configureStore";
+import { setBasket } from "@features/baskets/basketSlice";
 
 interface Props {
   product: Product;
@@ -14,13 +15,13 @@ interface Props {
 
 function ProductCard({ product }: Props) {
   const [loading, setLoading] = useState(false)
-  const { setBasket } = useStoreContext();
+  const dispatch = useAppDispatch()
   
   function handleAddItem(productId: number) {
     setLoading(true);
 
     agent.Basket.addItem(productId)
-      .then(basket => setBasket(basket))
+      .then(basket => dispatch(setBasket(basket)))
       .catch(error => console.log("adding error", productId, error))
       .finally(() => setLoading(false))
   }

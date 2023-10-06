@@ -1,4 +1,4 @@
-import { useStoreContext } from "@app/context/StoreContext";
+import { useAppSelector } from "@app/store/configureStore";
 import { currencyFormat } from "@app/util/util";
 import { TableContainer, Paper, Table, TableBody, TableRow, TableCell } from "@mui/material";
 
@@ -6,7 +6,7 @@ export default function BasketSummary() {
     const FREE_DELIVERY_MINIMUM_VALUE = 10000;
     const DELIVERY_FEE_VALUE = 500;
 
-    const { basket } = useStoreContext();
+    const { basket } = useAppSelector(state => state.basket);
     const subtotal = basket?.items.reduce((subtotal, item) => subtotal + (item.price * item.quantity), 0) ?? 0;
     const deliveryFee = subtotal < FREE_DELIVERY_MINIMUM_VALUE ? DELIVERY_FEE_VALUE : 0 ?? 0;
 
