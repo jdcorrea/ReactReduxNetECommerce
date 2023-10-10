@@ -17,23 +17,21 @@ import { TextField } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { useAppDispatch, useAppSelector } from '@app/store/configureStore'
 import { addBasketItemAsync, removeBasketItemAsync } from '@features/baskets/basketSlice'
+import { fetchProductAsync, productSelectors } from './catalogSlice'
 
 function ProductDetails() {
-  const { basket, status } = useAppSelector(state => state.basket)
+  const { basket, status: statusBasket } = useAppSelector(state => state.basket)
   const dispatch = useAppDispatch()
   const { id } = useParams<{id: string}>()
-  const [product, setProduct] = useState<Product | null >(null)
-  const [loading, setLoading] = useState(true)
+  const product = useAppSelector(state => productSelectors.selectById(state, id!))
+  const { status: statusProduct } = useAppSelector(state => state.catalog)
   const [quantity, setQuantity] = useState(0)
   const item = basket?.items.find(i => i.productId === product?.id)
 
   useEffect(() => {
     if (item) setQuantity(item.quantity)
-    id && agent.Catalog.details(parseInt(id))
-      .then(response => setProduct(response))
-      .catch(error => console.log(error))
-      .finally(() => setLoading(false))
-  }, [id, item])
+    if (!product && id) dispatch(fetchProductAsync(parseInt(id)))
+  }, [id, item, dispatch, product])
 
   function handleInputChange(event: any) {
     if (event.target.value >= 0) {
@@ -53,7 +51,7 @@ function ProductDetails() {
     }
   }
   
-  if (loading) return <Loading message='Loading product detail...'/>
+  if (statusProduct === 'pendingFetchProduct') return <Loading message='Loading product detail...'/>
 
   if (!product) return <NotFound />
 
@@ -109,7 +107,7 @@ function ProductDetails() {
           <Grid item xs={6}>
             <LoadingButton
               disabled={item?.quantity === quantity || !item && quantity === 0}
-              loading={status.includes(`pendingRemoveItem${item?.productId}`)}
+              loading={statusBasket === `pendingRemoveItem${item?.productId}`}
               onClick={handleUpdateCart}
               sx={{height: '55px'}}
               color='primary'
