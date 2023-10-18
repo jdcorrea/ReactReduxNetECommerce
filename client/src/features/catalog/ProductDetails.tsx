@@ -47,7 +47,7 @@ function ProductDetails() {
     } else {
       const updatedQuantity = item.quantity - quantity
         // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        dispatch(removeBasketItemAsync({ productId: product?.id!, quantity: updatedQuantity}))
+        dispatch(removeBasketItemAsync({ productId: product?.id!, quantity: updatedQuantity, name: item.name}))
     }
   }
   
@@ -107,7 +107,9 @@ function ProductDetails() {
           <Grid item xs={6}>
             <LoadingButton
               disabled={item?.quantity === quantity || !item && quantity === 0}
-              loading={statusBasket === `pendingRemoveItem${item?.productId}`}
+              loading={
+                statusBasket.includes('pending')
+              }
               onClick={handleUpdateCart}
               sx={{height: '55px'}}
               color='primary'
