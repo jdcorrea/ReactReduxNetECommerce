@@ -1,4 +1,3 @@
-import { Catalog } from '@features/catalog/Catalog';
 import agent from "@app/api/agent";
 import { Product, ProductsParams } from "@app/models/product";
 import { RootState } from "@app/store/configureStore";
@@ -10,7 +9,7 @@ interface CatalogState {
   status: string;
   brands: string[];
   types: string[];
-  productsParams: ProductsParams
+  productsParams: ProductsParams;
 }
 
 const productsAdapter = createEntityAdapter<Product>()
@@ -22,8 +21,8 @@ function getAxiosParams(productsParams: ProductsParams){
   params.append('orderBy', productsParams.orderBy)
 
   if(productsParams.searchTerm) params.append('searchTerm', productsParams.searchTerm)
-  if(productsParams.brands) params.append('searchTerm', productsParams.brands.toString())
-  if(productsParams.types) params.append('searchTerm', productsParams.types.toString())
+  if(productsParams.brands) params.append('brands', productsParams.brands.toString())
+  if(productsParams.types) params.append('types', productsParams.types.toString())
 
   return params
 }
