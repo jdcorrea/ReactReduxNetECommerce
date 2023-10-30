@@ -1,3 +1,4 @@
+import { Catalog } from '@features/catalog/Catalog';
 import agent from "@app/api/agent";
 import { Product, ProductsParams } from "@app/models/product";
 import { RootState } from "@app/store/configureStore";
@@ -14,11 +15,25 @@ interface CatalogState {
 
 const productsAdapter = createEntityAdapter<Product>()
 
-export const fetchProductsAsync = createAsyncThunk<Product[]> (
+function getAxiosParams(productsParams: ProductsParams){
+  const params = new URLSearchParams()
+  params.append('pageNumber', productsParams.pageNumber.toString())
+  params.append('pageSize', productsParams.pageSize.toString())
+  params.append('orderBy', productsParams.orderBy)
+
+  if(productsParams.searchTerm) params.append('searchTerm', productsParams.searchTerm)
+  if(productsParams.brands) params.append('searchTerm', productsParams.brands.toString())
+  if(productsParams.types) params.append('searchTerm', productsParams.types.toString())
+
+  return params
+}
+
+export const fetchProductsAsync = createAsyncThunk<Product[], void, {state: RootState}> (
   'catalog/fetchProductsAsync',
   async ( _, thunkAPI) => {
+    const params = getAxiosParams(thunkAPI.getState().catalog.productsParams)
     try{
-      return await agent.Catalog.list()
+      return await agent.Catalog.list(params)
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     catch(error: any) {
