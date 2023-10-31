@@ -6,6 +6,7 @@ import { productSelectors, fetchProductsAsync, fetchFiltersAsync, setProductPara
 import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Pagination, Paper, Radio, RadioGroup, Typography } from "@mui/material";
 import ProductSearch from "./ProductSearch";
 import RadioButtonGroup from "@app/components/RadioButtonGroup";
+import CheckboxButton from "@app/components/CheckboxButton";
 
 const sortOptions = [
   { value: 'name', label: 'Alphabetical', checked: true },
@@ -40,24 +41,22 @@ function Catalog() {
           <RadioButtonGroup
             selectedValue={productsParams.orderBy}
             options={sortOptions}
-            onChange={(e) => dispatch(setProductParams({orderBy: e.target.value}))}
+            onChange={(e) => dispatch(setProductParams({ orderBy: e.target.value }))}
           />
         </Paper>
-        <Paper sx={{ mb:2, p:2 }}>
-          <FormGroup>
-            <FormLabel>Brands</FormLabel>
-            {brands.map(brand => (
-              <FormControlLabel key={brand} control={<Checkbox />} label={brand} />
-            ))}
-          </FormGroup>
+        <Paper sx={{ mb: 2, p: 2 }}>
+          <CheckboxButton
+            items={types}
+            checked={productsParams.types ?? []}
+            onChange={(items: string[]) => dispatch(setProductParams({ types: items }))}
+          />
         </Paper>
-        <Paper sx={{ mb:2, p:2 }}>
-          <FormGroup>
-            <FormLabel>Types</FormLabel>
-            {types.map(type => (
-              <FormControlLabel key={type} control={<Checkbox />} label={type} />
-            ))}
-          </FormGroup>
+        <Paper sx={{ mb: 2, p: 2 }}>
+          <CheckboxButton
+            items={brands}
+            checked={productsParams.brands ?? []}
+            onChange={(items: string[]) => dispatch(setProductParams({ brands: items }))}
+          />
         </Paper>
       </Grid>
       <Grid item xs={9}>
@@ -65,11 +64,11 @@ function Catalog() {
       </Grid>
       <Grid item xs={3}></Grid>
       <Grid item xs={9}>
-      <Box display='flex' justifyContent='space-between' alignItems='center'>
+        <Box display='flex' justifyContent='space-between' alignItems='center'>
           <Typography>
             Displaying 1 - 6 of 20 items
           </Typography>
-          <Pagination color='secondary' size='large' count={3} page={2}/>
+          <Pagination color='secondary' size='large' count={3} page={2} />
         </Box>
       </Grid>
     </Grid>
