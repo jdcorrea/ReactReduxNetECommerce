@@ -20,7 +20,7 @@ function Catalog() {
 
   const products = useAppSelector(productSelectors.selectAll)
   const dispatch = useAppDispatch()
-  const { productsLoaded, status, filtersLoaded, brands, types, productsParams, metaData } = useAppSelector(state => state.catalog)
+  const { productsLoaded, filtersLoaded, brands, types, productsParams, metaData } = useAppSelector(state => state.catalog)
 
   useEffect(() => {
     if (!productsLoaded) dispatch(fetchProductsAsync())
@@ -30,7 +30,7 @@ function Catalog() {
     if (!filtersLoaded) dispatch(fetchFiltersAsync())
   }, [dispatch, filtersLoaded])
 
-  if (status === 'pendingFetchProducts' || !metaData) return <Loading message="Loading products..." />
+  if (!filtersLoaded) return <Loading message="Loading products..." />
   return (
     <Grid container columnSpacing={4}>
       <Grid item xs={3}>
@@ -64,10 +64,12 @@ function Catalog() {
       </Grid>
       <Grid item xs={3}></Grid>
       <Grid item xs={9} sx={{mb:2}}>
-        <AppPagination
-          metaData={metaData}
-          onPageChange={(page: number) => dispatch(setProductParams({pageNumber: page}))}
-        />
+        { metaData &&
+          <AppPagination
+            metaData={metaData}
+            onPageChange={(page: number) => dispatch(setProductParams({pageNumber: page}))}
+          />
+        }
       </Grid>
     </Grid>
   )
