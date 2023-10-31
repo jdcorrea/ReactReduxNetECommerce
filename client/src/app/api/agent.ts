@@ -1,3 +1,4 @@
+import { PaginatedResponse } from "@app/models/pagination";
 import { router } from "@app/router/Router";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from 'react-toastify'
@@ -9,6 +10,11 @@ const sleep = () => new Promise(resolve => setTimeout(resolve, 500))
 
 axios.interceptors.response.use(async response => {
   await sleep()
+  const pagination = response.headers['pagination']
+  if (pagination) {
+    response.data = new PaginatedResponse(response.data, JSON.parse(pagination))
+    return response
+  }
   return response
 }, (error: AxiosError) => {
   const {data, status} = error.response as AxiosResponse

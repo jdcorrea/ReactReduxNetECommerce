@@ -10,6 +10,7 @@ interface CatalogState {
   brands: string[];
   types: string[];
   productsParams: ProductsParams;
+  metaData: string | null;
 }
 
 const productsAdapter = createEntityAdapter<Product>()
@@ -32,7 +33,9 @@ export const fetchProductsAsync = createAsyncThunk<Product[], void, {state: Root
   async ( _, thunkAPI) => {
     const params = getAxiosParams(thunkAPI.getState().catalog.productsParams)
     try{
-      return await agent.Catalog.list(params)
+      const response = await agent.Catalog.list(params)
+      thunkAPI.dispatch(setMetada(response.metaData))
+      return response.items
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     catch(error: any) {
@@ -82,7 +85,8 @@ export const catalogSlice = createSlice({
     brands: [],
     types: [],
     filtersLoaded: false,
-    productsParams: initParams()
+    productsParams: initParams(),
+    metaData: null
   }),
   reducers: {
     setProductParams: (state, action) => {
@@ -90,6 +94,9 @@ export const catalogSlice = createSlice({
       state.productsParams = {
         ...state.productsParams, ...action.payload
       }
+    },
+    setMetada: (state, action) => {
+      state.metaData = action.payload
     },
     resetProductParams: (state) => {
       state.productsParams = initParams()
@@ -136,4 +143,4 @@ export const catalogSlice = createSlice({
 })
 
 export const productSelectors = productsAdapter.getSelectors((state: RootState) => state.catalog)
-export const { setProductParams, resetProductParams } = catalogSlice.actions
+export const { setProductParams, resetProductParams, setMetada } = catalogSlice.actions
