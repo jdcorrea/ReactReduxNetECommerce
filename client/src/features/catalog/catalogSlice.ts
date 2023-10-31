@@ -1,4 +1,5 @@
 import agent from "@app/api/agent";
+import { MetaData } from "@app/models/pagination";
 import { Product, ProductsParams } from "@app/models/product";
 import { RootState } from "@app/store/configureStore";
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
@@ -10,7 +11,7 @@ interface CatalogState {
   brands: string[];
   types: string[];
   productsParams: ProductsParams;
-  metaData: string | null;
+  metaData: MetaData | null;
 }
 
 const productsAdapter = createEntityAdapter<Product>()
@@ -22,8 +23,8 @@ function getAxiosParams(productsParams: ProductsParams){
   params.append('orderBy', productsParams.orderBy)
 
   if(productsParams.searchTerm) params.append('searchTerm', productsParams.searchTerm)
-  if(productsParams.brands) params.append('brands', productsParams.brands.toString())
-  if(productsParams.types) params.append('types', productsParams.types.toString())
+  if(productsParams.brands.length > 0) params.append('brands', productsParams.brands.toString())
+  if(productsParams.types.length > 0) params.append('types', productsParams.types.toString())
 
   return params
 }
@@ -34,7 +35,7 @@ export const fetchProductsAsync = createAsyncThunk<Product[], void, {state: Root
     const params = getAxiosParams(thunkAPI.getState().catalog.productsParams)
     try{
       const response = await agent.Catalog.list(params)
-      thunkAPI.dispatch(setMetada(response.metaData))
+      thunkAPI.dispatch(setMetadata(response.metaData))
       return response.items
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,7 +74,9 @@ function initParams() {
   return {
     pageNumber: 1,
     pageSize: 6,
-    orderBy: 'name'
+    orderBy: 'name',
+    brands: [],
+    types: []
   }
 }
 
@@ -95,7 +98,13 @@ export const catalogSlice = createSlice({
         ...state.productsParams, ...action.payload
       }
     },
-    setMetada: (state, action) => {
+    setPageNumber: (state, action) => {
+      state.productsLoaded = false
+      state.productsParams = {
+        ...state.productsParams, ...action.payload, pageNumber: 1
+      }
+    },
+    setMetadata: (state, action) => {
       state.metaData = action.payload
     },
     resetProductParams: (state) => {
@@ -143,4 +152,4 @@ export const catalogSlice = createSlice({
 })
 
 export const productSelectors = productsAdapter.getSelectors((state: RootState) => state.catalog)
-export const { setProductParams, resetProductParams, setMetada } = catalogSlice.actions
+export const { setProductParams, resetProductParams, setMetadata, setPageNumber } = catalogSlice.actions

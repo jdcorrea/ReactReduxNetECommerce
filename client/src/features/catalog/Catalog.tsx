@@ -2,11 +2,12 @@ import ProductList from "./ProductList";
 import { useEffect } from "react";
 import Loading from "@app/layout/Loading";
 import { useAppDispatch, useAppSelector } from "@app/store/configureStore";
-import { productSelectors, fetchProductsAsync, fetchFiltersAsync, setProductParams } from "./catalogSlice";
-import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Pagination, Paper, Radio, RadioGroup, Typography } from "@mui/material";
+import { productSelectors, fetchProductsAsync, fetchFiltersAsync, setProductParams, setPageNumber } from "./catalogSlice";
+import { Grid, Paper } from "@mui/material";
 import ProductSearch from "./ProductSearch";
 import RadioButtonGroup from "@app/components/RadioButtonGroup";
 import CheckboxButton from "@app/components/CheckboxButton";
+import AppPagination from "@app/components/AppPagination";
 
 const sortOptions = [
   { value: 'name', label: 'Alphabetical', checked: true },
@@ -19,7 +20,7 @@ function Catalog() {
 
   const products = useAppSelector(productSelectors.selectAll)
   const dispatch = useAppDispatch()
-  const { productsLoaded, status, filtersLoaded, brands, types, productsParams } = useAppSelector(state => state.catalog)
+  const { productsLoaded, status, filtersLoaded, brands, types, productsParams, metaData } = useAppSelector(state => state.catalog)
 
   useEffect(() => {
     if (!productsLoaded) dispatch(fetchProductsAsync())
@@ -29,10 +30,9 @@ function Catalog() {
     if (!filtersLoaded) dispatch(fetchFiltersAsync())
   }, [dispatch, filtersLoaded])
 
-  if (status === 'pendingFetchProducts') return <Loading message="Loading products..." />
-
+  if (status === 'pendingFetchProducts' || !metaData) return <Loading message="Loading products..." />
   return (
-    <Grid container spacing={4}>
+    <Grid container columnSpacing={4}>
       <Grid item xs={3}>
         <Paper sx={{ mb: 2 }}>
           <ProductSearch />
@@ -48,14 +48,14 @@ function Catalog() {
           <CheckboxButton
             items={types}
             checked={productsParams.types ?? []}
-            onChange={(items: string[]) => dispatch(setProductParams({ types: items }))}
+            onChange={(items: string[]) => dispatch(setPageNumber({ types: items }))}
           />
         </Paper>
         <Paper sx={{ mb: 2, p: 2 }}>
           <CheckboxButton
             items={brands}
             checked={productsParams.brands ?? []}
-            onChange={(items: string[]) => dispatch(setProductParams({ brands: items }))}
+            onChange={(items: string[]) => dispatch(setPageNumber({ brands: items }))}
           />
         </Paper>
       </Grid>
@@ -63,13 +63,11 @@ function Catalog() {
         <ProductList products={products} />
       </Grid>
       <Grid item xs={3}></Grid>
-      <Grid item xs={9}>
-        <Box display='flex' justifyContent='space-between' alignItems='center'>
-          <Typography>
-            Displaying 1 - 6 of 20 items
-          </Typography>
-          <Pagination color='secondary' size='large' count={3} page={2} />
-        </Box>
+      <Grid item xs={9} sx={{mb:2}}>
+        <AppPagination
+          metaData={metaData}
+          onPageChange={(page: number) => dispatch(setProductParams({pageNumber: page}))}
+        />
       </Grid>
     </Grid>
   )
