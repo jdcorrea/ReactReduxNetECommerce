@@ -20,3 +20,6 @@ json2ts.com
 
 -- Adding Entity Framework Migrations
 dotnet ef migrations add BasketEntityAdded
+
+-- Adding Entity Framework Migration user Identity
+dotnet ef migrations add IdentityAdded
