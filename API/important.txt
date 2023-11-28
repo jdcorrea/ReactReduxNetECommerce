@@ -23,3 +23,6 @@ dotnet ef migrations add BasketEntityAdded
 
 -- Adding Entity Framework Migration user Identity
 dotnet ef migrations add IdentityAdded
+
+-- Decode JWT Tokens
+jwt.io
